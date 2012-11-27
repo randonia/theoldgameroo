@@ -17,6 +17,7 @@ package
         [Bindable]
         public var dp_guesses:ArrayCollection;
         
+        public var main:Main;
         
         public function DataEngine()
         {
@@ -26,6 +27,16 @@ package
                         "DataEngine. Use .instance instead")
             }
             init();
+        }
+        
+        public function addPlayer(text:String):void 
+        {
+            dp_players.addItem({label: text});
+        }
+        
+        public function log(string:String):void 
+        {
+            main.log(string);
         }
         
         public static function get instance():DataEngine

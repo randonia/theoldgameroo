@@ -26,6 +26,7 @@
     
     <fx:Script>
         <![CDATA[
+        import components.AddNewPlayer;
         import flash.events.Event;
         import flash.events.MouseEvent;
         import flash.filesystem.File;
@@ -35,6 +36,7 @@
         import mx.controls.ComboBox;
         import mx.core.ScrollPolicy;
         import components.SubmissionRow;
+        import mx.managers.PopUpManager;
         
         private var file:File;
         private var saveFile:File;
@@ -46,18 +48,40 @@
         
         private function onCreationComplete():void
         {
+            dte.main = this;
             for (var i:int = 0; i < 5; ++i)
-                log("Update" + i);
+                dte.log("Update" + i);
                 
+            addRow();
+        }
+        
+        private function addRow():void 
+        {
             rows.addElement(new components.SubmissionRow());
         }
         
         private function changeHandler(e:Event):void
         {
-            log("Changed " + (e.target as ComboBox).selectedItem.label);
+            dte.log("Changed " + (e.target as ComboBox).selectedItem.label);
         }
         
-        private function log(string:String):void
+        private function addPlayer():void
+        {
+            if (addNewPlayer.text.length > 3)
+            {
+                dte.addPlayer(addNewPlayer.text);
+                dte.log("Added player: " + addNewPlayer.text);
+                addNewPlayer.text = "";
+                
+            }
+        }
+        
+        /**
+         * Even though I frequently use dte.log to point right back to this, it is so 
+         * I can eventually implement error logging and stuff without the need for the displaylist
+         * @param	string
+         */
+        public function log(string:String):void
         {
             logger.text += string + "\n";
             logger.verticalScrollPosition = logger.maxVerticalScrollPosition;
@@ -65,6 +89,13 @@
             status = string;
             trace(string);
             invalidateDisplayList();
+        }
+        
+        private function addNewPlayerPopup():void
+        {
+            var addNewPlayer:AddNewPlayer = AddNewPlayer(PopUpManager.createPopUp(this, AddNewPlayer, true));
+            addNewPlayer.x = screen.width * 0.5 - addNewPlayer.width * 0.5;
+            addNewPlayer.y = screen.height * 0.5 - addNewPlayer.height * 0.5;
         }
         
         ]]>
@@ -80,10 +111,12 @@
             </s:VGroup>
             <s:VGroup width="100%" height="100%">
                 <s:VGroup height="100%" width="100%">
+                    <mx:Button id="addNewPlayerBtn" label="Add Player" click="addNewPlayerPopup()"/>
+                    <mx:TextInput id="addNewPlayer" width="100%" enter="addPlayer()" />
                     <s:VGroup id="rows" width="100%" height="100%">
                     
                     </s:VGroup>
-                    <mx:Button label="+"/>
+                    <mx:Button label="+" click="addRow()" />
                 </s:VGroup>
                 <s:HGroup height="50" width="100%">
                     <mx:TextArea id="logger" width="100%" height="50" selectable="false"/>
