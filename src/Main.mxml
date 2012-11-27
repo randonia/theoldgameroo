@@ -2,14 +2,27 @@
 <s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
                        xmlns:s="library://ns.adobe.com/flex/spark"
                        xmlns:mx="library://ns.adobe.com/flex/mx"
-                       width="500"
-                       height="350"
-                       creationComplete="onCreationComplete()">
+                       xmlns:components="components.*"
+                       width="800"
+                       height="600"
+                       creationComplete="onCreationComplete()"
+                       >
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	
+    <fx:Style>
+        @namespace s "library://ns.adobe.com/flex/spark";
+        @namespace mx "library://ns.adobe.com/flex/mx";
+        .label 
+        {
+            color: #FFFFFF;
+            fontFamily: "Arial";
+            fontSize: 14;
+            padding: 0px;
+        }
+    </fx:Style>
     
     <fx:Script>
         <![CDATA[
@@ -18,19 +31,30 @@
         import flash.filesystem.File;
         import flash.filesystem.FileMode;
         import flash.filesystem.FileStream;
+        import mx.collections.ArrayCollection;
+        import mx.controls.ComboBox;
         import mx.core.ScrollPolicy;
+        import components.SubmissionRow;
         
         private var file:File;
         private var saveFile:File;
         
         private var exportXML:XML;
         
+        [Bindable]
+        public var dte:DataEngine = DataEngine.instance;
+        
         private function onCreationComplete():void
         {
             for (var i:int = 0; i < 5; ++i)
                 log("Update" + i);
                 
-            logger.verticalScrollPolicy = ScrollPolicy.AUTO;
+            rows.addElement(new components.SubmissionRow());
+        }
+        
+        private function changeHandler(e:Event):void
+        {
+            log("Changed " + (e.target as ComboBox).selectedItem.label);
         }
         
         private function log(string:String):void
@@ -49,14 +73,23 @@
     <s:BorderContainer width="100%" height="100%">
         <s:Group width="100%" height="100%">
         <s:Rect width="100%" height="100%"><s:fill><mx:SolidColor color="#272727"/></s:fill></s:Rect>
-        <s:VGroup width="100%" height="100%">
-            <s:VGroup width="100%" height="100%">
-                
+        <s:HGroup height="100%" width="100%">
+            <s:VGroup height="100%" width="100">
+                <mx:Label text="This round's guesses" width="100%" styleName="label" />
+                <mx:List id="list_guesses" width="100%" height="100%" />
             </s:VGroup>
-            <s:HGroup height="50" width="100%">
-                <mx:TextArea id="logger" width="100%" height="50" selectable="false"/>
-            </s:HGroup>
-        </s:VGroup>
+            <s:VGroup width="100%" height="100%">
+                <s:VGroup height="100%" width="100%">
+                    <s:VGroup id="rows" width="100%" height="100%">
+                    
+                    </s:VGroup>
+                    <mx:Button label="+"/>
+                </s:VGroup>
+                <s:HGroup height="50" width="100%">
+                    <mx:TextArea id="logger" width="100%" height="50" selectable="false"/>
+                </s:HGroup>
+            </s:VGroup>
+        </s:HGroup>
         </s:Group>
     </s:BorderContainer>
     

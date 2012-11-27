@@ -9,3 +9,5 @@ bin-release/
 .project
 bin
 obj
+*.p12
+air/
