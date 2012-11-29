@@ -17,6 +17,9 @@ package
         [Bindable]
         public var dp_guesses:ArrayCollection;
         
+        [Bindable]
+        public var dp_answers:ArrayCollection;
+        
         public var main:Main;
         
         public function DataEngine()
@@ -31,7 +34,9 @@ package
         
         public function addPlayer(text:String):void 
         {
-            dp_players.addItem({label: text});
+            var entry:Array = text.split("-");
+            dp_players.addItem( { label: entry[0]} );
+            dp_answers.addItem( { label: entry[0], style: "Alive", answer: entry[1] } );
         }
         
         public function log(string:String):void 
@@ -56,6 +61,7 @@ package
             dp_players = new ArrayCollection();
             dp_targets = new ArrayCollection();
             dp_guesses = new ArrayCollection();
+            dp_answers = new ArrayCollection();
         }
         
     }

@@ -4,7 +4,9 @@
                xmlns:mx="library://ns.adobe.com/flex/mx"
                title="Add new player"
                showCloseButton="true"
-               close="close()">
+               creationComplete="init()"
+               close="close()"
+               width="250">
     
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
@@ -18,6 +20,10 @@
         [Bindable]
         public var dte:DataEngine = DataEngine.instance;
         
+        private function init():void
+        {
+            focusManager.setFocus(inputString);
+        }
         
         private function submit():void
         {
