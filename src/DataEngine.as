@@ -98,6 +98,32 @@ package
             return result;
         }
         
+        public function getPlayerByIndex(selectedIndex:int):String 
+        {
+            var result:String = "";
+            if (selectedIndex < playerData.length)
+            {
+                result = playerData[selectedIndex].left;
+            }
+            return result;
+        }
+        
+        public function getGuessByIndex(selectedIndex:int):String
+        {
+            var result:String = "";
+            if (selectedIndex < playerData.length)
+            {
+                result = playerData[selectedIndex].right;
+            }
+            return result;
+        }
+        
+        public function processResults(results:Vector.<Triple>):void 
+        {
+            log("Processing results!");
+            // TODO: Ended here, work on this part 
+        }
+        
         /**
          * Saves the state to XML!
          */

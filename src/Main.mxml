@@ -106,6 +106,23 @@
             addNewPlayer.y = screen.height * 0.5 - addNewPlayer.height * 0.5;
         }
         
+        private function runTheResults():void
+        {
+            var results:Vector.<Triple> = new Vector.<Triple>();
+            // Build a triple of data for each of the rows!
+            for (var i:int = 0; i < rows.numChildren; ++i)
+            {
+                // Grab the row and generate a triple
+                var row:components.SubmissionRow = rows.getChildAt(i) as components.SubmissionRow;
+                var player:String = dte.getPlayerByIndex(row.cb_players.selectedIndex);
+                var target:String = dte.getPlayerByIndex(row.cb_targets.selectedIndex);
+                var guess:String = dte.getGuessByIndex(row.cb_guesses.selectedIndex);
+                results.push(new Triple(player, target, guess));
+            }
+            
+            dte.processResults(results);
+        }
+        
         ]]>
     </fx:Script>
     
@@ -124,7 +141,7 @@
                     <s:VGroup id="rows" width="100%" height="100%">
                     
                     </s:VGroup>
-                    <mx:Button label="+" click="addRow()" />
+                    <mx:Button label="Run Results" click="runTheResults()" />
                 </s:VGroup>
                 <s:HGroup height="50" width="100%">
                     <mx:TextArea id="logger" width="100%" height="50" selectable="false"/>
