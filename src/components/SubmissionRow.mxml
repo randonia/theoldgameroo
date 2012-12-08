@@ -28,10 +28,11 @@
         <mx:ComboBox id="cb_players" dataProvider="{dte.dp_players}" width="150" 
                         change="changeHandler(event)"/>
         <mx:Label text="Target: " styleName="label" />
-        <mx:ComboBox id="cb_targets" dataProvider="{dte.dp_targets}" width="150" 
+        <mx:ComboBox id="cb_targets" dataProvider="{dte.dp_players}" width="150" 
                         change="changeHandler(event)"/>
         <mx:Label text="Guess: " styleName="label" />
-        <mx:ComboBox id="cb_guesses" dataProvider="{dte.dp_guesses}" width="150" 
+        <mx:ComboBox id="cb_guesses" dataProvider="{dte.dp_answers}" width="150" 
                         change="changeHandler(event)"/>
+        <mx:Label id="selected" width="50"/>
     </s:HGroup>
 </s:Group>

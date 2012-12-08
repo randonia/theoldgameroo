@@ -28,11 +28,14 @@
     <fx:Script>
         <![CDATA[
         import components.AddNewPlayer;
+        import flash.desktop.NotificationType;
         import flash.events.Event;
         import flash.events.MouseEvent;
+        import flash.events.TimerEvent;
         import flash.filesystem.File;
         import flash.filesystem.FileMode;
         import flash.filesystem.FileStream;
+        import flash.utils.Timer;
         import mx.collections.ArrayCollection;
         import mx.controls.ComboBox;
         import mx.core.ScrollPolicy;
@@ -50,10 +53,14 @@
         private function onCreationComplete():void
         {
             dte.main = this;
-            for (var i:int = 0; i < 5; ++i)
-                dte.log("Update" + i);
                 
-            addRow();
+            //addRow();
+            
+            //var timer:Timer = new Timer(120);
+            //timer.addEventListener(TimerEvent.TIMER, function(e:TimerEvent):void { dte.log("TIMER!"); } );
+            //timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(e:Event):void { stage.nativeWindow.notifyUser(NotificationType.CRITICAL); dte.log("ALERT!"); } );
+            //timer.repeatCount = 1;
+            //timer.start();
         }
         
         private function addRow():void 
@@ -66,15 +73,15 @@
             dte.log("Changed " + (e.target as ComboBox).selectedItem.label);
         }
         
-        private function addPlayer():void
+        private function addGuess():void
         {
-            if (addNewPlayer.text.length > 3)
-            {
-                dte.addPlayer(addNewPlayer.text);
-                dte.log("Added player: " + addNewPlayer.text);
-                addNewPlayer.text = "";
-                
-            }
+            var splitter:RegExp = /\s*[-=]\s*/g;
+            var guessEntry:Array = addGuessInput.text.split(splitter);
+            var row:components.SubmissionRow = new components.SubmissionRow();
+            row.cb_players.selectedIndex = dte.getPlayerIndex(guessEntry[0])
+            row.cb_targets.selectedIndex = dte.getPlayerIndex(guessEntry[1]);
+            row.cb_guesses.selectedIndex = dte.getGuessIndex(guessEntry[2]);
+            rows.addElement(row);
         }
         
         /**
@@ -108,12 +115,12 @@
         <s:HGroup height="100%" width="100%">
             <s:VGroup height="100%" width="100">
                 <mx:Label text="This round's guesses" width="100%" styleName="label" />
-                <mx:List id="list_guesses" itemRenderer="components.PlayerLabel" width="100%" height="100%" dataProvider="{dte.dp_answers}" />
+                <mx:List id="list_guesses" itemRenderer="components.PlayerLabel" width="100%" height="100%" dataProvider="{dte.dp_players}" />
             </s:VGroup>
             <s:VGroup width="100%" height="100%">
                 <s:VGroup height="100%" width="100%">
                     <mx:Button id="addNewPlayerBtn" label="Add Player" click="addNewPlayerPopup()"/>
-                    <mx:TextInput id="addNewPlayer" width="100%" enter="addPlayer()" />
+                    <mx:TextInput id="addGuessInput" width="100%" enter="addGuess()" />
                     <s:VGroup id="rows" width="100%" height="100%">
                     
                     </s:VGroup>
