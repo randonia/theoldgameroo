@@ -19,7 +19,7 @@ package
         
         public function toString():String
         {
-            return "<b>" + _player + "</b>: " + _target + " - " + _guess;
+            return _player + _target + " - " + _guess;
         }
         
         public function get player():String { return _player; }

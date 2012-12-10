@@ -1,6 +1,9 @@
 package  
 {
     import adobe.utils.CustomActions;
+    import flash.filesystem.File;
+    import flash.filesystem.FileMode;
+    import flash.filesystem.FileStream;
     import mx.collections.ArrayCollection;
 	/**
      * ...
@@ -11,7 +14,10 @@ package
         private static var _constructionOkay:Boolean;
         private static var _instance:DataEngine;
         
+        private static const SAVEFILE:String = "gamedata.derp";
+        
         public var playerData:Vector.<Pair>;
+        
         
         [Bindable]
         public var dp_players:ArrayCollection;
@@ -35,12 +41,14 @@ package
             init();
         }
         
-        public function addPlayer(text:String):void 
+        public function addPlayer(text:String, export:Boolean = true):void 
         {
             var splitter:RegExp = /\s*[-=]\s*/g;
             var entry:Array = text.split(splitter);
             playerData.push(new Pair(entry[0], entry[1]));
             updateDataProviders();
+            if(export)
+                exportToXML();
         }
         
         private function updateDataProviders():void
@@ -57,8 +65,10 @@ package
         
         public function log(string:String):void 
         {
-            main.log(string);
-            exportToXML();
+            if(main)
+                main.log(string);
+            else
+                trace(string);
         }
         
         /**
@@ -173,20 +183,6 @@ package
             trace(email);
         }
         
-        /**
-         * Saves the state to XML!
-         */
-        private function exportToXML():void 
-        {
-            var result:XML = XML(<gameroo/>);
-            
-            var players:XML = XML(<players/>);
-            for each (var player:String in dp_players)
-            {
-                
-            }
-        }
-        
         public static function get instance():DataEngine
         {
             if(_instance == null)
@@ -209,17 +205,72 @@ package
             dp_answers = new ArrayCollection();
             
             parseFromXML();
-            playerData.push(new Pair("Charlotte", "Foo"));
-            playerData.push(new Pair("David", "Bar"));
-            playerData.push(new Pair("Chris", "Baz"));
+            
+            //playerData.push(new Pair("Charlotte", "Foo"));
+            //playerData.push(new Pair("David", "Bar"));
+            //playerData.push(new Pair("Chris", "Baz"));
             updateDataProviders();
         }
         
         private function parseFromXML():void 
         {
-            // TODO: Implement this
+            log("Parsing from XML");
+            
+            var fs:FileStream = getFileStream(SAVEFILE, false);
+            var dataXML:XML = XML(fs.readUTFBytes(fs.bytesAvailable));
+            fs.close();
+            
+            // Parse the players
+            for each(var player:XML in dataXML.players.player)
+            {
+                addPlayer(player.name[0] + " - " + player.answer[0], false);
+            }
+            
         }
         
+                /**
+         * Saves the state to XML!
+         */
+        private function exportToXML():void 
+        {
+            log("Exporting to XML");
+            var result:XML = XML(<gameroo/>);
+            
+            var players:XML = XML(<players/>);
+            for each(var player:Pair in playerData)
+            {
+                players.appendChild(player.toXML());
+            }
+            result.appendChild(players);
+            
+            var fs:FileStream = getFileStream(SAVEFILE, true);
+            
+            fs.writeUTFBytes(result.toXMLString());
+        }
+        
+        
+        private function getFileStream(fileName:String, write:Boolean):FileStream
+        {
+            var fs:FileStream;
+            
+            var mode:String = (write)?FileMode.WRITE:FileMode.READ;
+            
+            var file:File = File.applicationStorageDirectory.resolvePath(fileName);
+            
+            if (!file.exists)
+            {
+                log("File doesn't exist, creating a new one");
+                var wr:File = new File(file.nativePath);
+                var stream:FileStream = new FileStream();
+                stream.open(wr, FileMode.WRITE);
+                stream.writeUTFBytes("");
+                stream.close();
+            }
+            
+            fs = new FileStream();
+            fs.open(file, mode);
+            
+            return fs;
+        }
     }
-
 }

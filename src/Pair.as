@@ -27,6 +27,11 @@ package
             return _left + ":" + right + "|" + _alive;
         }
         
+        public function toXML():XML
+        {
+            return <player><name>{_left}</name><answer>{_right}</answer></player>;
+        }
+        
         
     }
 
