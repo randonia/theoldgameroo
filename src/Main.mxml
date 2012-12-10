@@ -78,10 +78,12 @@
             var splitter:RegExp = /\s*[-=]\s*/g;
             var guessEntry:Array = addGuessInput.text.split(splitter);
             var row:components.SubmissionRow = new components.SubmissionRow();
+            row.rawtext.text = addGuessInput.text;
             row.cb_players.selectedIndex = dte.getPlayerIndex(guessEntry[0])
             row.cb_targets.selectedIndex = dte.getPlayerIndex(guessEntry[1]);
             row.cb_guesses.selectedIndex = dte.getGuessIndex(guessEntry[2]);
             rows.addElement(row);
+            addGuessInput.text = "";
         }
         
         /**

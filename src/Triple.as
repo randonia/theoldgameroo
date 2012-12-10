@@ -17,6 +17,11 @@ package
             _guess = guess
         }
         
+        public function toString():String
+        {
+            return "<b>" + _player + "</b>: " + _target + " - " + _guess;
+        }
+        
         public function get player():String { return _player; }
         
         public function get target():String { return _target; }

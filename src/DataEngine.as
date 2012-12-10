@@ -118,10 +118,59 @@ package
             return result;
         }
         
+        
+        /**
+         * This assumes proper data input. Bad assumption, but hopefully that'd be fixed in the 
+         * submission viewing
+         * @param	results
+         */
         public function processResults(results:Vector.<Triple>):void 
         {
             log("Processing results!");
-            // TODO: Ended here, work on this part 
+            var email:String = "";
+            
+            var guesses:Vector.<String> = new Vector.<String>();
+            var answers:Vector.<String> = new Vector.<String>();
+            
+            for each(var submission:Triple in results)
+            {
+                var plr:String = submission.player;
+                var trg:String = submission.target;
+                var gus:String = submission.guess;
+                
+                // Grab the target for comparison
+                var targetPair:Pair = playerData[getPlayerIndex(trg)];
+                // Check if the target was hit
+                if (targetPair.left == trg && targetPair.right == gus)
+                {
+                    trace("Player hit! " + targetPair.toString());
+                    answers.push(submission.toString());
+                }
+                else
+                {
+                    guesses.push(trg + " - " + gus);
+                }
+            }
+            
+            // Append the answers
+            email += "THE ANSWERS" + "\n";
+            for each(var answer:String in answers)
+            {
+                email += answer + "\n";
+            }
+            if (answers.length == 0)
+            {
+                email += "No correct guesses\n";
+            }
+            
+            // Append the guesses
+            email += "THE GUESSES" + "\n";
+            for each(var guess:String in guesses)
+            {
+                email += guess + "\n";
+            }
+            
+            trace(email);
         }
         
         /**

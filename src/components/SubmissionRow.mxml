@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
                xmlns:s="library://ns.adobe.com/flex/spark"
-               xmlns:mx="library://ns.adobe.com/flex/mx">
+               xmlns:mx="library://ns.adobe.com/flex/mx"
+               creationComplete="onCreate()">
     
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
@@ -14,6 +15,10 @@
         [Bindable]
         public var dte:DataEngine = DataEngine.instance;
         
+        private function onCreate():void
+        {
+            rawtext.setStyle("color", 0xFFFFFF);
+        }
         
         private function changeHandler(e:Event):void
         {
@@ -23,16 +28,19 @@
         ]]>
     </fx:Script>
     <s:Rect width="100%" height="100%"><s:fill><mx:SolidColor color="#272727"/></s:fill></s:Rect>
-    <s:HGroup height="100%" width="100%">
-        <mx:Label text="Player: " styleName="label" />
-        <mx:ComboBox id="cb_players" dataProvider="{dte.dp_players}" width="150" 
-                        change="changeHandler(event)"/>
-        <mx:Label text="Target: " styleName="label" />
-        <mx:ComboBox id="cb_targets" dataProvider="{dte.dp_players}" width="150" 
-                        change="changeHandler(event)"/>
-        <mx:Label text="Guess: " styleName="label" />
-        <mx:ComboBox id="cb_guesses" dataProvider="{dte.dp_answers}" width="150" 
-                        change="changeHandler(event)"/>
-        <mx:Label id="selected" width="50"/>
-    </s:HGroup>
+    <s:VGroup height="100%" width="100%">
+        <mx:Label id="rawtext" text="" width="100%" />
+        <s:HGroup height="100%" width="100%">
+            <mx:Label text="Player: " styleName="label"/>
+            <mx:ComboBox id="cb_players" dataProvider="{dte.dp_players}" width="150" 
+                            change="changeHandler(event)"/>
+            <mx:Label text="Target: " styleName="label" />
+            <mx:ComboBox id="cb_targets" dataProvider="{dte.dp_players}" width="150" 
+                            change="changeHandler(event)"/>
+            <mx:Label text="Guess: " styleName="label" />
+            <mx:ComboBox id="cb_guesses" dataProvider="{dte.dp_answers}" width="150" 
+                            change="changeHandler(event)"/>
+            <mx:Label id="selected" width="50"/>
+        </s:HGroup>
+    </s:VGroup>
 </s:Group>
