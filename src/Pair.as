@@ -29,7 +29,7 @@ package
         
         public function toXML():XML
         {
-            return <player><name>{_left}</name><answer>{_right}</answer></player>;
+            return <player><name>{_left}</name><answer>{_right}</answer><alive>{_alive.toString()}</alive></player>;
         }
         
         

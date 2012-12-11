@@ -41,11 +41,13 @@ package
             init();
         }
         
-        public function addPlayer(text:String, export:Boolean = true):void 
+        public function addPlayer(text:String, export:Boolean = true, alive:String = "true"):void 
         {
             var splitter:RegExp = /\s*[-=]\s*/g;
             var entry:Array = text.split(splitter);
-            playerData.push(new Pair(entry[0], entry[1]));
+            var newPair:Pair = new Pair(entry[0], entry[1]);
+            newPair.alive = (alive == "true")?true:false;
+            playerData.push(newPair);
             updateDataProviders();
             if(export)
                 exportToXML();
@@ -58,7 +60,7 @@ package
             dp_answers.removeAll();
             for each (var p:Pair in playerData)
             {
-                dp_players.addItem( { label: p.left, answer: p.right } );
+                dp_players.addItem( { label: p.left, answer: p.right, style: ((p.alive)?"Alive":"Dead")} );
                 dp_answers.addItem( { label: p.right } );
             }
         }
@@ -128,13 +130,79 @@ package
             return result;
         }
         
+        public function generateInitialEmail():String
+        {
+            var result:String = "";
+            var players:Array = new Array();
+            var answers:Array = new Array();
+            
+            for each(var plr:Pair in playerData)
+            {
+                players.push(plr.left);
+                answers.push(plr.right);
+            }
+            
+            result += "THE PLAYERS:\n"
+            
+            players.sort(Array.CASEINSENSITIVE);
+            
+            for each(var name:String in players)
+            {
+                result += name + "\n";
+            }
+            
+            answers.sort(Array.CASEINSENSITIVE);
+            
+            result += "THE GUESSES:\n";
+            for each(var answer:String in answers)
+            {
+                result += answer + "\n";
+            }
+            
+            return result;
+        }
+        
+        private function buildListOfActivePlayers():String
+        {
+            var result:String = "";
+            
+            var players:Array = new Array();
+            var answers:Array = new Array();
+            
+            for each(var plr:Pair in playerData)
+            {
+                if(plr.alive)
+                {
+                    players.push(plr.left);
+                    answers.push(plr.right);
+                }
+            }
+            
+            result += "THE PLAYERS:\n"
+            
+            players.sort(Array.CASEINSENSITIVE);
+            
+            for each(var name:String in players)
+            {
+                result += name + "\n";
+            }
+            
+            answers.sort(Array.CASEINSENSITIVE);
+            
+            result += "\nTHE SUBMISSIONS:\n";
+            for each(var answer:String in answers)
+            {
+                result += answer + "\n";
+            }
+            return result;
+        }
         
         /**
          * This assumes proper data input. Bad assumption, but hopefully that'd be fixed in the 
          * submission viewing
          * @param	results
          */
-        public function processResults(results:Vector.<Triple>):void 
+        public function processResults(results:Vector.<Triple>):String 
         {
             log("Processing results!");
             var email:String = "";
@@ -155,22 +223,12 @@ package
                 {
                     trace("Player hit! " + targetPair.toString());
                     answers.push(submission.toString());
+                    targetPair.alive = false;
                 }
                 else
                 {
                     guesses.push(trg + " - " + gus);
                 }
-            }
-            
-            // Append the answers
-            email += "THE ANSWERS" + "\n";
-            for each(var answer:String in answers)
-            {
-                email += answer + "\n";
-            }
-            if (answers.length == 0)
-            {
-                email += "No correct guesses\n";
             }
             
             // Append the guesses
@@ -180,7 +238,21 @@ package
                 email += guess + "\n";
             }
             
-            trace(email);
+            // Append the answers
+            email += "\nTHE ANSWERS" + "\n";
+            for each(var answer:String in answers)
+            {
+                email += answer + "\n";
+            }
+            if (answers.length == 0)
+            {
+                email += "No correct guesses\n";
+            }
+            
+            email += "\n" + buildListOfActivePlayers();
+            
+            return email;
+            
         }
         
         public static function get instance():DataEngine
@@ -223,7 +295,7 @@ package
             // Parse the players
             for each(var player:XML in dataXML.players.player)
             {
-                addPlayer(player.name[0] + " - " + player.answer[0], false);
+                addPlayer(player.name[0] + " - " + player.answer[0], false, player.alive[0]);
             }
             
         }
