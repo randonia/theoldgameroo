@@ -178,7 +178,7 @@ package
                 }
             }
             
-            result += "******************\nTHE PLAYERS:\n******************\n"
+            result += "THE PLAYERS:\n"
             
             players.sort(Array.CASEINSENSITIVE);
             
@@ -189,7 +189,7 @@ package
             
             answers.sort(Array.CASEINSENSITIVE);
             
-            result += "\n************************\nTHE SUBMISSIONS:\n************************\n";
+            result += "\nTHE SUBMISSIONS:\n";
             for each(var answer:String in answers)
             {
                 result += answer + "\n";
@@ -232,14 +232,14 @@ package
             }
             
             // Append the guesses
-            email += "*******************\nTHE GUESSES\n*******************\n";
+            email += "THE GUESSES\n";
             for each(var guess:String in guesses)
             {
                 email += guess + "\n";
             }
             
             // Append the answers
-            email += "\n*******************\nTHE ANSWERS\n*******************\n";
+            email += "\nTHE ANSWERS\n";
             for each(var answer:String in answers)
             {
                 email += answer + "\n";
